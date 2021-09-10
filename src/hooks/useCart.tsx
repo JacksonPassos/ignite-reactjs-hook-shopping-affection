@@ -38,7 +38,7 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
       const updatedCard = [...cart] 
       const productExists = updatedCard.find(card => card.id == productId)
 
-      const { data: amount } = await api.get(`/stock/${productId}`)
+      const { data: { amount } } = await api.get(`/stock/${productId}`)
       const stockAmount = amount
       const currentAmount = productExists ? productExists.amount : 0
       const amountValue = currentAmount + 1
@@ -52,19 +52,17 @@ export function CartProvider({ children }: CartProviderProps): JSX.Element {
         productExists.amount = amountValue
       }
       else {
-         const product = await api.get(`/products/${productId}`)
+        const product = await api.get(`/products/${productId}`)
 
-         const newProduct = {
-           ...product.data,
-           amount: 1
-         }
-
-         updatedCard.push(newProduct)
-         setCart(updatedCard)
-         localStorage.setItem('@RocketShoes:cart', JSON.stringify(cart) )
-
-
+        const newProduct = {
+          ...product.data,
+          amount: 1
+        }
+        updatedCard.push(newProduct)
       }
+      setCart(updatedCard)
+      localStorage.setItem('@RocketShoes:cart', JSON.stringify(updatedCard) )
+
 
     } catch {
       // TODO
